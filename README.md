@@ -22,5 +22,6 @@ Project_name:app
     - Shift + Enter = Crt + Enter
     - Ctr + Space + suggestion
     - Alt + Enter = Quick fix (fast import)
+    - Alt + insert, quick method
     - Ctr + shift + arrow =crt + alt +arrow
 
