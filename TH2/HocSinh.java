@@ -13,81 +13,133 @@ import java.util.Date;
  * @author admin
  */
 public class HocSinh {
-    private int count=0;
-    private String hoten, mssv, quequan;
-    private Date ngaysinh;
-    private double diemtoan, diemvan, diemanh;
+    private static int dem = 0;
+    private String maSo;
+    private String hoTen;
+    private Date ngaySinh;
+    private String queQuan;
+    private double toan;
+    private double van;
+    private double anh;        
+    
     {
-        count++;
+        if (dem > 9999) {
+            throw new IllegalStateException("Loi khong the tao them sinh vien");
+        }
+        dem++;
+        maSo = String.format("HS-%04d", dem);
     }
 
-    public HocSinh(String hoten, String quequan, Date ngaysinh, double diemtoan, double diemvan, double diemanh) {
-        this.hoten = hoten;
-        this.quequan = quequan;
-        this.ngaysinh = ngaysinh;
-        this.diemtoan = diemtoan;
-        this.diemvan = diemvan;
-        this.diemanh = diemanh;
-        this.mssv=String.format("HS-f03.d", count);
+    public String getMaSo() {
+        return maSo;
     }
 
-    public String getHoten() {
-        return hoten;
-    }
-    public String getMssv() {
-        return mssv;
-    }
-    public String getQuequan() {
-        return quequan;
-    }
-    public Date getNgaysinh() {
-        return ngaysinh;
-    }
-    public double getDiemtoan() {
-        return diemtoan;
-    }
-    public double getDiemvan() {
-        return diemvan;
-    }
-    public double getDiemanh() {
-        return diemanh;
+    public String getHoTen() {
+        return hoTen;
     }
 
-    public void setHoten(String hoten) {
-        this.hoten = hoten;
+    public void setHoTen(String hoTen) {
+        this.hoTen = hoTen;
     }
-    public void setQuequan(String quequan) {
-        this.quequan = quequan;
+
+    public Date getNgaySinh() {
+        return ngaySinh;
     }
-    public void setNgaysinh(Date ngaysinh) {
-        this.ngaysinh = ngaysinh;
+
+    public void setNgaySinh(Date ngaySinh) {
+        this.ngaySinh = ngaySinh;
     }
-    public void setDiemtoan(double diemtoan) {
-        this.diemtoan = diemtoan;
+
+    public String getQueQuan() {
+        return queQuan;
     }
-    public void setDiemvan(double diemvan) {
-        this.diemvan = diemvan;
+
+    public void setQueQuan(String queQuan) {
+        this.queQuan = queQuan;
     }
-    public void setDiemanh(double diemanh) {
-        this.diemanh = diemanh;
+
+    public double getToan() {
+        return toan;
+    }
+
+    public void setToan(double toan) {
+        this.toan = toan;
+    }
+
+    public double getVan() {
+        return van;
+    }
+
+    public void setVan(double van) {
+        this.van = van;
+    }
+
+    public double getAnh() {
+        return anh;
+    }
+
+    public void setAnh(double anh) {
+        this.anh = anh;
+    }
+
+    public HocSinh(String hoTen, Date ngaySinh, String queQuan, double toan, double van, double anh) {
+        this.hoTen = hoTen;
+        this.ngaySinh = ngaySinh;
+        this.queQuan = queQuan;
+        this.toan = toan;
+        this.van = van;
+        this.anh = anh;
+    }   
+    
+    public double dtb() {
+        return (toan + van + anh) / 3.0;
+    }
+    
+    public String hocLuc() {
+        double d = dtb();
+        if (d >= 8.0)
+            return "Gioi";
+        else if (d >= 6.5)
+            return "Kha";
+        else if (d >= 5.0)
+            return "Trung binh";
+        else
+            return "Yeu";
+    }
+    
+    public int getTuoi() {
+        Calendar ngayHienTai = Calendar.getInstance();
+        Calendar ns = Calendar.getInstance();        
+        ns.setTime(ngaySinh);
+        int tuoi = ngayHienTai.get(Calendar.YEAR) - ns.get(Calendar.YEAR);
+        
+        if (ngayHienTai.get(Calendar.MONTH) < ns.get(Calendar.MONTH) || 
+            (ngayHienTai.get(Calendar.MONTH) == ns.get(Calendar.MONTH) && 
+            ngayHienTai.get(Calendar.DAY_OF_MONTH) < ns.get(Calendar.DAY_OF_MONTH))) {
+            tuoi--;
+        } // Neu du nam nhung chua du thang hoac ngay
+        
+        return tuoi;
     }
     
     @Override
-    public String toString(){
-        SimpleDateFormat df=new SimpleDateFormat("dd/MM/yyyy");
-        return String.format("Ten: %s\n Ngay sinh: %s\nQue quan:%s\nMSSV: %s\nDiem toan%.2f\nDiem van:%.2f\nDiem anh%.2f\n",
-                hoten, df.format(ngaysinh), quequan, mssv, diemtoan, diemvan,diemanh);
+    public String toString() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        return String.format("Ma so: %s\nHo ten: %s\nNgay sinh: %s\nQue quan: %s\nDiem toan: %.2f\nDiem van: %.2f\nDiem anh: %.2f\nDiem TB: %.2f\nHoc luc: %s\n\n======\n", maSo, hoTen, dateFormat.format(ngaySinh), queQuan, toan, van, anh, dtb(), hocLuc()); 
     }
     
-    public int tuoi(){
-        Calendar currentdate=Calendar.getInstance();
-        Calendar ns=Calendar.getInstance();
-        ns.setTime(ngaysinh);
-        return ns.get(Calendar.YEAR)-currentdate.get(Calendar.YEAR);
+    public int soSanh(HocSinh hs) {
+        return -Double.compare(this.dtb(), hs.dtb());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;  // Kiem tra tham chieu
+        if (obj == null || this.getClass() != obj.getClass()) return false; // Kiem tra kieu du lieu
+        HocSinh hs = (HocSinh) obj;
+        return this.maSo.contains(hs.getMaSo());
+    }           
     public static void main(String[] args) {
-        SimpleDateFormat df=new SimpleDateFormat("dd/MM/yyyy");
-        HocSinh hs1=new HocSinh("Nguyen van a","HCM",df.parse("28-1-2024"), 6.8,9.5,7.9);
-        System.out.println(hs1.toString());
+        
     }
 }
